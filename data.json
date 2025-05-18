@@ -1,0 +1,32 @@
+{
+  "routes": [
+    {
+      "id": "0456e052-3564-46bc-9f88-8fa4ad3e4903",
+      "name": "La Rochelle to Bordeaux",
+      "waypoints": [
+        { "id": 1, "lat": 46.16, "lng": -1.15 },
+        { "id": 2, "lat": 45.83, "lng": -0.98 },
+        { "id": 3, "lat": 45.57, "lng": -0.53 },
+        { "id": 4, "lat": 44.84, "lng": -0.58 }
+      ]
+    },
+    {
+      "id": "9b8fc30f-2993-4780-a47a-58dacb2f73f0",
+      "name": "Nantes to Brest",
+      "waypoints": [
+        { "id": 1, "lat": 47.21, "lng": -1.55 },
+        { "id": 2, "lat": 47.75, "lng": -3.36 },
+        { "id": 3, "lat": 48.38, "lng": -4.49 }
+      ]
+    },
+    {
+      "id": "311d6b8b-5f4e-4918-b99b-8913db3dca0f",
+      "name": "French Riviera",
+      "waypoints": [
+        { "id": 1, "lat": 43.29, "lng": 5.37 },
+        { "id": 2, "lat": 43.55, "lng": 7.02 },
+        { "id": 3, "lat": 43.70, "lng": 7.27 }
+      ]
+    }
+  ]
+}
