@@ -3,16 +3,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 interface IEditRoute {
 	onAdd?: (route: Route) => void;
 	onBack?: () => void;
 	route?: Route;
+	waypoints?: Waypoint[];
 }
 
-const EditRoute: FC<IEditRoute> = ({ onAdd, onBack, route }) => {
+const EditRoute: FC<IEditRoute> = ({ onAdd, onBack, route, waypoints: externalWaypoints }) => {
 	const [name, setName] = useState<string>(route?.name || '');
 	const [waypoints, setWaypoints] = useState<Waypoint[]>(
 		route?.waypoints && route.waypoints.length > 0 ? route.waypoints : [{ id: Date.now(), lat: 46.16, lng: -1.15 }]
@@ -47,6 +48,12 @@ const EditRoute: FC<IEditRoute> = ({ onAdd, onBack, route }) => {
 			onAdd({ id: uuidv4(), name, waypoints });
 		}
 	};
+
+	useEffect(() => {
+		if (externalWaypoints && externalWaypoints.length > 0) {
+			setWaypoints(externalWaypoints);
+		}
+	}, [externalWaypoints]);
 
 	return (
 		<Box
@@ -158,7 +165,14 @@ const EditRoute: FC<IEditRoute> = ({ onAdd, onBack, route }) => {
 				Add Waypoint
 			</Button>
 
-			<Button startIcon={<SaveIcon />} onClick={handleSave} variant='contained' color='primary' sx={{ mt: 2 }}>
+			<Button
+				startIcon={<SaveIcon />}
+				onClick={handleSave}
+				variant='contained'
+				color='primary'
+				sx={{ mt: 2 }}
+				disabled={!name || waypoints.length < 2}
+			>
 				Save Route
 			</Button>
 		</Box>

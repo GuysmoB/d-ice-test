@@ -7,20 +7,25 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ISidebar {
 	onSelectRoute?: (route: Route) => void;
+	onEditRoute?: (route: Route) => void;
 	onAddRoute?: (route: Route) => void;
+	onUpdateRouteWaypoints?: (routeId: string, waypoints: Waypoint[]) => void;
+	routes?: Route[];
 }
 
-const Sidebar: FC<ISidebar> = ({ onAddRoute, onSelectRoute }) => {
+const Sidebar: FC<ISidebar> = ({ onSelectRoute, onEditRoute, onAddRoute, routes }) => {
 	const [showNewRoute, setShowNewRoute] = useState(false);
-	const [routes, setRoutes] = useState<Route[]>([]);
 	const [editingRoute, setEditingRoute] = useState<Route | null>(null);
 
 	const handleEditRoute = (route: Route) => {
 		setEditingRoute(route);
+
+		if (onEditRoute) {
+			onEditRoute(route);
+		}
 	};
 
 	const handleAddRoute = (route: Route) => {
-		setRoutes([...routes, route]);
 		setShowNewRoute(false);
 
 		if (onAddRoute) {
@@ -35,9 +40,6 @@ const Sidebar: FC<ISidebar> = ({ onAddRoute, onSelectRoute }) => {
 	const handleSaveEdit = (updatedRoute: Route) => {
 		if (!editingRoute) return;
 
-		const updatedRoutes = routes.map((route) => (route.id === editingRoute.id ? { ...route, ...updatedRoute } : route));
-
-		setRoutes(updatedRoutes);
 		setEditingRoute(null);
 
 		if (onSelectRoute) {
@@ -45,19 +47,11 @@ const Sidebar: FC<ISidebar> = ({ onAddRoute, onSelectRoute }) => {
 		}
 	};
 
-	useEffect(() => {
-		import('../../data.json')
-			.then((data) => {
-				setRoutes(data.routes);
-			})
-			.catch((error) => {
-				console.error('Failed to load routes:', error);
-			});
-	}, []);
-
-	useEffect(() => {
-		console.log('Routes:', routes);
-	}, [routes]);
+	const handleSelectRoute = (route: Route) => {
+		if (onSelectRoute) {
+			onSelectRoute(route);
+		}
+	};
 
 	if (showNewRoute) {
 		return <EditRoute onAdd={handleAddRoute} onBack={() => setShowNewRoute(false)} />;
@@ -91,7 +85,7 @@ const Sidebar: FC<ISidebar> = ({ onAddRoute, onSelectRoute }) => {
 			</Box>
 
 			<List sx={{ width: '100%', bgcolor: 'transparent', p: 0 }}>
-				{routes.length === 0 ? (
+				{!routes || routes.length === 0 ? (
 					<Typography variant='body2' sx={{ color: 'rgba(255,255,255,0.7)', textAlign: 'center', mt: 2 }}>
 						No routes available. Create one!
 					</Typography>
@@ -99,21 +93,27 @@ const Sidebar: FC<ISidebar> = ({ onAddRoute, onSelectRoute }) => {
 					routes.map((route) => (
 						<ListItem
 							key={route.id}
-							// onClick={() => handleSelectRoute(route)}
+							onClick={() => handleSelectRoute(route)}
 							sx={{
 								mb: 1,
 								bgcolor: 'rgba(255,255,255,0.1)',
 								borderRadius: 1,
-								'&:hover': { bgcolor: 'rgba(255,255,255,0.2)' }
+								'&:hover': { bgcolor: 'rgba(255,255,255,0.2)' },
+								cursor: 'pointer'
 							}}
 							secondaryAction={
 								<Box>
-									<IconButton edge='end' aria-label='edit' onClick={() => handleEditRoute(route)} sx={{ color: 'white' }}>
+									<IconButton
+										edge='end'
+										aria-label='edit'
+										onClick={(e) => {
+											e.stopPropagation();
+											handleEditRoute(route);
+										}}
+										sx={{ color: 'white' }}
+									>
 										<EditIcon />
 									</IconButton>
-									{/* <IconButton edge='end' aria-label='delete' onClick={() => handleDeleteRoute(route.id)} sx={{ color: 'white' }}>
-										<DeleteIcon />
-									</IconButton> */}
 								</Box>
 							}
 						>
