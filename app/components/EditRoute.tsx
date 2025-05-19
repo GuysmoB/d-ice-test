@@ -209,7 +209,14 @@ const EditRoute: FC<IEditRoute> = ({ onAdd, onBack, route }) => {
 			</Box>
 
 			<Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-				<Button startIcon={<AddIcon />} onClick={addWaypoint} variant='contained' color='secondary' sx={{ color: 'white' }}>
+				<Button
+					startIcon={<AddIcon />}
+					onClick={addWaypoint}
+					variant='contained'
+					color='secondary'
+					sx={{ color: 'white' }}
+					disabled={localWaypoints.length >= 6}
+				>
 					Add Waypoint
 				</Button>
 
